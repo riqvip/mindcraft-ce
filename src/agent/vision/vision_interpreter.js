@@ -2,6 +2,7 @@ import { Vec3 } from 'vec3';
 import { Camera } from "./camera.js";
 import fs from 'fs';
 import path from 'path';
+import * as logger from '../../../logger.js';
 
 export class VisionInterpreter {
     constructor(agent, vision_mode) {
@@ -102,6 +103,14 @@ export class VisionInterpreter {
 
             const blockInfo = this.getCenterBlockInfo();
             const result = await this.agent.prompter.promptVision(messages, imageBuffer);
+
+            // Log the vision event (for prompted mode)
+            // Only log if imageBuffer and result are valid
+            if (imageBuffer && result) {
+                // Await to ensure logging completes
+                await logger.logVision(messages, imageBuffer, result + `\n${blockInfo}`);
+            }
+
             return result + `\n${blockInfo}`;
 
         } catch (error) {
@@ -109,4 +118,4 @@ export class VisionInterpreter {
             return `Error reading image: ${error.message}`;
         }
     }
-} 
+}

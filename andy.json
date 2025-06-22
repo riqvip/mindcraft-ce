@@ -1,6 +1,6 @@
 {
     "name": "andy",
 
-    "model": "pollinations/openai-large"
+    "model": "gpt-4o"
 
 }

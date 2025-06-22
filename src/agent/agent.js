@@ -20,6 +20,7 @@ import settings from '../../settings.js';
 import { serverProxy } from './agent_proxy.js';
 import { Task } from './tasks/tasks.js';
 import { say } from './speak.js';
+import { sendUsernames } from '../../logger.js';
 
 export class Agent {
     async start(profile_fp, load_mem=false, init_message=null, count_id=0, task_path=null, task_id=null) {
@@ -106,6 +107,10 @@ export class Agent {
             try {
                 clearTimeout(spawnTimeout);
                 addBrowserViewer(this.bot, count_id);
+
+                if (settings.external_logging) {
+                    sendUsernames(this.bot);
+                }
 
                 // wait for a bit so stats are not undefined
                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -237,7 +242,7 @@ export class Agent {
                 console.log(this.name, 'received message from', username, ':', message);
 
                 if (convoManager.isOtherAgent(username)) {
-                    console.warn('received whisper from other bot??')
+                    console.warn('received whisper from other bot??');
                 }
                 else {
                     let translation = await handleEnglishTranslation(message);
@@ -246,7 +251,7 @@ export class Agent {
             } catch (error) {
                 console.error('Error handling message:', error);
             }
-        }
+        };
 
 		this.respondFunc = respondFunc;
 
@@ -459,7 +464,7 @@ export class Agent {
             console.log(`${this.name} full response to ${source}: ""${res}""`);
 
             if (res.trim().length === 0) {
-                console.warn('no response')
+                console.warn('no response');
                 break; // empty response ends loop
             }
 
@@ -473,7 +478,7 @@ export class Agent {
                 if (!commandExists(command_name)) {
                     // Agent hallucinated a command
                     await this.history.add('system', `Command ${command_name} does not exist.`, null);
-                    console.warn('Agent hallucinated command:', command_name)
+                    console.warn('Agent hallucinated command:', command_name);
                     continue;
                 }
 
@@ -525,7 +530,7 @@ export class Agent {
         return used_command;
     }
 
-    async routeResponse(to_player, message) {
+    routeResponse(to_player, message) {
         if (this.shut_up) return;
         let self_prompt = to_player === 'system' || to_player === this.name;
         if (self_prompt && this.last_sender) {
@@ -599,7 +604,7 @@ export class Agent {
             console.error('Error event!', err);
         });
         this.bot.on('end', (reason) => {
-            console.warn('Bot disconnected! Killing agent process.', reason)
+            console.warn('Bot disconnected! Killing agent process.', reason);
             this.cleanKill('Bot disconnected! Killing agent process.');
         });
         this.bot.on('death', () => {
@@ -610,7 +615,7 @@ export class Agent {
             console.warn('Bot kicked!', reason);
             this.cleanKill('Bot kicked! Killing agent process.');
         });
-        this.bot.on('messagestr', async (message, _, jsonMsg) => {
+        this.bot.on('messagestr', (message, _, jsonMsg) => {
             if (jsonMsg.translate && jsonMsg.translate.startsWith('death') && message.startsWith(this.name)) {
                 console.log('Agent died: ', message);
                 let death_pos = this.bot.entity.position;
@@ -672,7 +677,7 @@ export class Agent {
              await this.history.add('system', msg, null);
              this.history.save();
         } else {
-            console.warn("[Agent] History not initialized, cannot save cleanKill message.")
+            console.warn("[Agent] History not initialized, cannot save cleanKill message.");
         }
         if (this.bot) {
             this.bot.chat(code > 1 ? 'Restarting.': 'Exiting.');
@@ -688,7 +693,7 @@ export class Agent {
                     await this.history.add('system', `Task ended with score : ${res.score}`, null);
                     await this.history.save();
                 } else {
-                     console.warn("[Agent] History not initialized, cannot save task end message.")
+                     console.warn("[Agent] History not initialized, cannot save task end message.");
                 }
                 // await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 second for save to complete
                 console.log('Task finished:', res.message);
