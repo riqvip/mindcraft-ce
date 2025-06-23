@@ -1,8 +1,5 @@
-import path from 'path';
-import fs from 'fs';
-
 const settings = {
-    "minecraft_version": "1.21.4", // supports up to 1.21.4
+    "minecraft_version": "1.21.1", // supports up to 1.21.4
     "host": "127.0.0.1", // or "localhost", "your.ip.address.here"
     "port": 55916,
     "auth": "offline", // or "microsoft"
@@ -37,9 +34,9 @@ const settings = {
     "language": "en", // translate to/from this language. NOT text-to-speech language. Supports these language names: https://cloud.google.com/translate/docs/languages
     "show_bot_views": false, // show bot's view in browser at localhost:3000, 3001...
 
-    "allow_insecure_coding": true, // allows newAction command and model can write/run code on your computer. enable at own risk
+    "allow_insecure_coding": false, // allows newAction command and model can write/run code on your computer. enable at own risk
     "allow_vision": false, // allows vision model to interpret screenshots as inputs
-    "vision_mode": "prompted", // "off", "prompted", or "always"
+    "vision_mode": "off", // "off", "prompted", or "always"
     "blocked_actions" : ["!checkBlueprint", "!checkBlueprintLevel", "!getBlueprint", "!getBlueprintLevel"] , // commands to disable and remove from docs. Ex: ["!setMode"]
     "code_timeout_mins": -1, // minutes code is allowed to run. -1 for no timeout
     "relevant_docs_count": 5, // number of relevant code function docs to select for prompting. -1 for all
@@ -74,6 +71,7 @@ const settings = {
     "log_reasoning_data": false, // Logs only reasoning inputs / outputs
     "log_vision_data": false, // Logs only vision inputs / outputs
     "external_logging": true, // Enable sending logs to a cloud API
+
 };
 
 // these environment variables override certain settings
