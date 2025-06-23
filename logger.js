@@ -411,6 +411,7 @@ export async function logVision(conversationHistory, imageBuffer, response, visi
     
     if (!conversationHistory || conversationHistory.length === 0 || !trimmedResponse || !imageBuffer) {
         logCounts.skipped_empty++;
+        console.log(`[Logger] Skipping vision log: Empty history, response, or image. Response: "${trimmedResponse}"`);
         return;
     }
 
@@ -433,6 +434,7 @@ export async function logVision(conversationHistory, imageBuffer, response, visi
     
     if (errorMessages.some(err => trimmedResponse.includes(err))) {
         logCounts.skipped_empty++;
+        console.log(`[Logger] Skipping vision log: Response contains error message. Response: "${trimmedResponse}"`);
         return;
     }
 

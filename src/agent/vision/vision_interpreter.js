@@ -104,13 +104,6 @@ export class VisionInterpreter {
             const blockInfo = this.getCenterBlockInfo();
             const result = await this.agent.prompter.promptVision(messages, imageBuffer);
 
-            // Log the vision event (for prompted mode)
-            // Only log if imageBuffer and result are valid
-            if (imageBuffer && result) {
-                // Await to ensure logging completes
-                await logger.logVision(messages, imageBuffer, result + `\n${blockInfo}`);
-            }
-
             return result + `\n${blockInfo}`;
 
         } catch (error) {

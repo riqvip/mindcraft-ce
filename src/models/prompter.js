@@ -374,9 +374,6 @@ export class Prompter {
                 console.log("Generated response:", generation); 
                 await this._saveLog(prompt, messages, generation, 'conversation');
 
-                // Remove the incorrect logVision call here since sendRequest should handle it
-                // The model's sendRequest method will call logVision if imageData was provided
-
             } catch (error) {
                 console.error('Error during message generation or file writing:', error);
                 continue;
